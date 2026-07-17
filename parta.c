@@ -11,21 +11,32 @@ int main(int argc, char* argv[]) {
     char buffer[BUFSIZE];
     // TODO: Complete and document
 
+    // If no file provided, print error with exit status of 1
+    if (argc < 2) {
+        fprintf(stderr, "USAGE: %s FILEIN\n", argv[0]);
+        return 1;
+    }
+
+    // Initialize counters for all categories
     int uppercase = 0;
     int lowercase = 0;
     int nums = 0;
     int spaces = 0;
     int others = 0;
 
+    // Open the provided file
     int file = open(argv[1], O_RDONLY);
 
+    // If file doesn't exist, print error with exit status of 2
     if (file < 0) {
-        perror("Error opening the file");
-        return 1;
+        fprintf(stderr, "ERROR: %s not found\n", argv[1]);
+        return 2;
     }
 
+    // Initialize counter for bytes being read
     int i;
 
+    // Read through the file and increment a category by 1 each time a match is found
     while ((i = read(file, buffer, BUFSIZE)) > 0) {
         for (int j = 0; j < i; j++) {
             char c = buffer[j];
@@ -48,6 +59,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // Close the file
     close(file);
 
     printf("Upper,%d\n", uppercase);
